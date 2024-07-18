@@ -10,6 +10,7 @@ default_args = {
 
 def echo_datetime():
     current_datetime = datetime.now()
+    # This will print the current datetime to the Airflow logs
     print(f"The current datetime is: {current_datetime}")
 
 
