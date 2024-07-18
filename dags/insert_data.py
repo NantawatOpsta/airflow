@@ -23,10 +23,16 @@ with DAG(
         oracle_hook = OracleHook(oracle_conn_id='oracle_db')
         connection = oracle_hook.get_conn()
         cursor = connection.cursor()
+        
+        # Get the current date and time
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Use the current date and time for the create_time field
         cursor.execute("""
         INSERT INTO ORACLE_TABLE (id, name, create_time) 
-        VALUES (1, 'John Doe', TO_DATE('2024-07-18', 'YYYY-MM-DD'))
-        """)
+        VALUES (1, 'John Doe', TO_TIMESTAMP(:current_time, 'YYYY-MM-DD HH24:MI:SS'))""",
+        [current_time])
+        
         connection.commit()
         cursor.close()
         connection.close()
