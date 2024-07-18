@@ -6,6 +6,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.models import Variable
 from airflow.utils.dates import days_ago
 from dateutil.parser import parse
+from datetime import timedelta
 
 
 def sync_data():
@@ -46,12 +47,13 @@ def sync_data():
 default_args = {
     'owner': 'LDB',
     'depends_on_past': False,
-    'start_date': datetime.now(),  # Updated to start from now
+    # Example: 10 minutes in the past
+    'start_date': datetime.now() - timedelta(minutes=10),
     'retries': 0,
-    'catchup': False,  # Added to prevent running for each missed schedule since start_date
+    'catchup': False,
 }
 
-with DAG('sync_data_dag', default_args=default_args, schedule_interval='*/5 * * * *') as dag:
+with DAG('sync_data_dag', default_args=default_args, schedule_interval='*/1 * * * *') as dag:
     sync_task = PythonOperator(
         task_id='sync_data_task',
         python_callable=sync_data,
