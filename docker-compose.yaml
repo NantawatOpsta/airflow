@@ -77,6 +77,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    - ${AIRFLOW_PROJ_DIR:-.}/files:/tmp/airflow_files
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -133,7 +134,8 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-
+    # volumes:
+    #   - ./files/user.csv:/tmp/user.csv
   airflow-scheduler:
     <<: *airflow-common
     command: scheduler
@@ -171,7 +173,8 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-
+    # volumes:
+    #   - ./files/user.csv:/tmp/user.csv
   airflow-triggerer:
     <<: *airflow-common
     command: triggerer

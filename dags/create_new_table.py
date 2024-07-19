@@ -23,7 +23,7 @@ with DAG(
         oracle_hook = OracleHook(oracle_conn_id='oracle_db')
         connection = oracle_hook.get_conn()
         cursor = connection.cursor()
-        
+
         cursor.execute("""
         BEGIN
             EXECUTE IMMEDIATE 'DROP TABLE ORACLE_TABLE';
@@ -34,7 +34,8 @@ with DAG(
             END IF;
         END;
         """)
-        cursor.execute("CREATE TABLE ORACLE_TABLE (id NUMBER, name VARCHAR(50), create_time DATE)")
+        cursor.execute(
+            "CREATE TABLE ORACLE_TABLE (id NUMBER, name VARCHAR(50), create_time DATE)")
         connection.commit()
         cursor.close()
         connection.close()
@@ -50,7 +51,8 @@ with DAG(
         connection = postgres_hook.get_conn()
         cursor = connection.cursor()
         cursor.execute("DROP TABLE IF EXISTS POSTGRES_TABLE")
-        cursor.execute("CREATE TABLE POSTGRES_TABLE (id SERIAL PRIMARY KEY, name VARCHAR(50), create_time TIMESTAMP)")
+        cursor.execute(
+            "CREATE TABLE POSTGRES_TABLE (id SERIAL PRIMARY KEY, name VARCHAR(50), create_time TIMESTAMP)")
         connection.commit()
         cursor.close()
         connection.close()
@@ -60,4 +62,4 @@ with DAG(
         python_callable=create_new_table,
     )
 
-    create_oracle_table >> create_postgres_table
+    create_postgres_table

@@ -51,6 +51,7 @@ default_args = {
     'start_date': datetime.now() - timedelta(minutes=10),
     'retries': 0,
     'catchup': False,
+    # mail when the task fails
 }
 
 with DAG('sync_data_dag', default_args=default_args, schedule_interval='*/1 * * * *') as dag:
