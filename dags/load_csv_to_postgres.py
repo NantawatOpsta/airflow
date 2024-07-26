@@ -1,8 +1,9 @@
+import csv
+
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from datetime import datetime, timedelta
-import csv
+from datetime import timedelta
 from airflow.utils.dates import days_ago
 from airflow.utils.log.logging_mixin import LoggingMixin
 
@@ -17,12 +18,6 @@ def create_new_table(**kwargs):
     connection.commit()
     cursor.close()
     connection.close()
-
-
-create_postgres_table = PythonOperator(
-    task_id='create_new_postgres_table',
-    python_callable=create_new_table,
-)
 
 
 def load_csv_to_postgres(**kwargs):
@@ -60,10 +55,14 @@ with DAG(
     tags=['file'],
 ) as dag:
 
+    create_postgres_table = PythonOperator(
+        task_id='create_new_postgres_table',
+        python_callable=create_new_table,
+    )
+
     load_csv_to_postgres_task = PythonOperator(
         task_id='load_csv_to_postgres',
         python_callable=load_csv_to_postgres,
-        provide_context=True,
     )
 
     create_postgres_table >> load_csv_to_postgres_task
